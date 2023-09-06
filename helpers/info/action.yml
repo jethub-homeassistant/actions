@@ -19,6 +19,16 @@ runs:
   using: "composite"
   steps: 
     - shell: bash
+      id: yqinstall
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        mkdir -p "$ACTION_PATH/bin"
+        wget -q -O "$ACTION_PATH/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        chmod a+x "$ACTION_PATH/bin/yq"
+        echo "$ACTION_PATH/bin" >> "$GITHUB_PATH"
+
+    - shell: bash
       id: info
       env:
         ACTION_PATH: ${{ github.action_path }}
@@ -27,11 +37,6 @@ runs:
         archs=[]
         image=""
         version=""
-
-        mkdir -p "$ACTION_PATH/bin"
-        wget -q -O "$ACTION_PATH/bin/yq" https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-        chmod a+x "$ACTION_PATH/bin/yq"
-        echo "$ACTION_PATH/bin" >> "$GITHUB_PATH"
 
         for file_type in json yml yaml; do
           if [[ -f "$INPUTS_PATH/build.${file_type}" ]]; then

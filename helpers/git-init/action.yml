@@ -3,10 +3,10 @@ description: 'GitHub action helper: git-init'
 inputs:
   name:
     required: true
-    default: 'Home Assistant'
+    default: 'JetHub Home Assistant'
   email:
     required: true
-    default: 'hello@home-assistant.io'
+    default: 'dev@jethome.ru'
   token:
     required: true
 runs:

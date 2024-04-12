@@ -50,7 +50,7 @@ runs:
         if [[ ! -z "$GITHUB_EVENT_INPUTS_VERSION" ]]; then
           version="$GITHUB_EVENT_INPUTS_VERSION"
 
-        elif [[ "${version}" =~ (master|main) && "$INPUTS_TYPE" =~ (supervisor|plugin|generic) ]]; then
+        elif [[ "${version}" =~ (master|main|master-jethub|main-jethub) && "$INPUTS_TYPE" =~ (supervisor|plugin|generic) ]]; then
           today="$(date --utc '+%Y-%m-%d')"
           midnight_timestamp="$(date --utc +%s --date=$today)"
           calver_date="$(date --utc --date=$today '+%Y.%m')"
@@ -67,7 +67,7 @@ runs:
         elif [[ "${version}" == "merge" && "$INPUTS_TYPE" =~ (supervisor|plugin|generic) ]]; then
           version="${{ github.sha }}"
 
-        elif [[ "${version}" == "dev" && "$INPUTS_TYPE" == "core" ]]; then
+        elif [[ "${version}" =~ (dev|dev-jethub) && "$INPUTS_TYPE" == "core" ]]; then
           python3 -m pip install uv
           uv pip install packaging tomli
           uv pip install .
@@ -85,6 +85,7 @@ runs:
 
         echo "stable=$stable" >> "$GITHUB_OUTPUT"
         echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "stable=$stable version=$version"
 
     - shell: bash
       env:
@@ -111,7 +112,7 @@ runs:
           fi
 
         elif [[ "$INPUTS_TYPE" == "core" ]]; then
-          if [[ "${{ steps.version.outputs.version }}" =~ dev ]]; then
+          if [[ "${{ steps.version.outputs.version }}" =~ (dev|dev-jethub) ]]; then
             echo "channel=dev" >> "$GITHUB_OUTPUT"
           elif [[ "${{ steps.version.outputs.version }}" =~ b ]]; then
             echo "channel=beta" >> "$GITHUB_OUTPUT"
